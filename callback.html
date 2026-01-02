@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RnBlue TikTok Auth</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #1a1a2e; color: white; }
+        h1 { color: #00ff88; }
+        .code-box { background: #16213e; padding: 20px; margin: 20px auto; border-radius: 8px; max-width: 600px; word-break: break-all; border: 1px solid #00ff88; }
+        code { font-size: 14px; color: #00ff88; }
+        button { background: #00ff88; color: #1a1a2e; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background: #00cc6a; }
+        .success { color: #00ff88; }
+        .error { color: #ff6b6b; }
+        .instructions { background: #16213e; padding: 15px; border-radius: 8px; margin: 20px auto; max-width: 500px; text-align: left; }
+        .instructions li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <h1 id="status">Elaborazione...</h1>
+    <div class="code-box">
+        <code id="authCode">Caricamento...</code>
+    </div>
+    <button id="copyBtn" onclick="copyCode()" style="display:none;">Copia Codice</button>
+    
+    <div class="instructions" id="instructions" style="display:none;">
+        <strong>Prossimi passi:</strong>
+        <ol>
+            <li>Copia il codice qui sopra</li>
+            <li>Torna al terminale</li>
+            <li>Incolla il codice quando richiesto</li>
+        </ol>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        const error = params.get('error');
+        const errorDescription = params.get('error_description');
+        
+        if (code) {
+            document.getElementById('status').innerHTML = 'Autorizzazione Completata!';
+            document.getElementById('status').className = 'success';
+            document.getElementById('authCode').textContent = code;
+            document.getElementById('copyBtn').style.display = 'inline-block';
+            document.getElementById('instructions').style.display = 'block';
+        } else if (error) {
+            document.getElementById('status').innerHTML = 'Errore';
+            document.getElementById('status').className = 'error';
+            document.getElementById('authCode').textContent = error + ': ' + (errorDescription || 'Errore sconosciuto');
+        } else {
+            document.getElementById('status').innerHTML = 'Nessun codice ricevuto';
+            document.getElementById('authCode').textContent = 'Parametri mancanti nella URL';
+        }
+        
+        function copyCode() {
+            if (code) {
+                navigator.clipboard.writeText(code).then(() => {
+                    document.getElementById('copyBtn').textContent = 'Copiato!';
+                    setTimeout(() => {
+                        document.getElementById('copyBtn').textContent = 'Copia Codice';
+                    }, 2000);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
